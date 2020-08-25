@@ -7,6 +7,7 @@ import models.Message
 import play.api.i18n.{ I18nSupport, Messages }
 import play.api.mvc._
 import scalikejdbc.AutoSession
+
 @Singleton
 class CreateMessageController @Inject()(components: ControllerComponents)
   extends AbstractController(components)
@@ -24,7 +25,7 @@ class CreateMessageController @Inject()(components: ControllerComponents)
         formWithErrors => BadRequest(views.html.create(formWithErrors)), { model =>
           implicit val session = AutoSession
           val now              = ZonedDateTime.now()
-          val message          = Message(None, model.body, now, now)
+          val message          = Message(None, Some(model.title), model.body, now, now)
           val result           = Message.create(message)
           if (result > 0) {
             Redirect(routes.GetMessagesController.index())
@@ -34,6 +35,4 @@ class CreateMessageController @Inject()(components: ControllerComponents)
         }
       )
   }
-
-
 }

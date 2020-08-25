@@ -17,7 +17,7 @@ class UpdateMessageController @Inject()(components: ControllerComponents)
 
   def index(messageId: Long): Action[AnyContent] = Action { implicit request =>
     val result     = Message.findById(messageId).get
-    val filledForm = form.fill(MessageForm(result.id, result.body))
+    val filledForm = form.fill(MessageForm(result.id, result.title.getOrElse(""), result.body))
     Ok(views.html.edit(filledForm))
   }
 
@@ -31,6 +31,7 @@ class UpdateMessageController @Inject()(components: ControllerComponents)
             .updateById(model.id.get)
             .withAttributes(
               'body     -> model.body,
+              'title    -> model.title,
               'updateAt -> ZonedDateTime.now()
             )
           if (result > 0)
