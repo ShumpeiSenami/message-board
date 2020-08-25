@@ -40,3 +40,5 @@ flywayUser := envConfig.value.getString("jdbcUserName")
 flywayPassword := envConfig.value.getString("jdbcPassword")
 
 libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.2.12"
+
+TwirlKeys.templateImports ++= Seq("forms._")
