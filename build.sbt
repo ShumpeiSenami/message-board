@@ -23,7 +23,9 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"        %% "scalikejdbc-play-initializer"    % "2.6.+",
   "ch.qos.logback"         % "logback-classic"                  % "1.2.3",
   "mysql"                  % "mysql-connector-java"             % "6.0.6",
-  "com.adrianhurt"         %% "play-bootstrap"                  % "1.2-P26-B3"
+  "com.adrianhurt"         %% "play-bootstrap"                  % "1.2-P26-B3",
+  "org.postgresql"         % "postgresql"                    % "42.0.0",
+  "org.flywaydb"           %% "flyway-play"                     % "4.0.0"
 )
 
 lazy val envConfig = settingKey[Config]("env-config")
@@ -42,3 +44,16 @@ flywayPassword := envConfig.value.getString("jdbcPassword")
 libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.2.12"
 
 TwirlKeys.templateImports ++= Seq("forms._")
+
+herokuJdkVersion in Compile := "1.8"
+
+herokuAppName in Compile := "kaifenan-message-board"
+
+// prod/application.confであることを確認してください
+herokuProcessTypes in Compile := Map(
+  "web" -> s"target/universal/stage/bin/${normalizedName.value} -Dhttp.port=$$PORT -Dconfig.resource=prod/application.conf -Ddb.default.migration.auto=true"
+)
+
+herokuConfigVars in Compile := Map(
+  "JAVA_OPTS" -> "-Xmx512m -Xms512m"
+)
